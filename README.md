@@ -1,8 +1,8 @@
 XHTML Entities for Android
 ==========================
 
-This utility class encodes and decodes HTML and XML entities optimized for Android.
-(Html does not support all entities like i.e. '„' (&bdquo; or &#8222;)).
+This utility class encodes and decodes HTML and XML entities optimized for Android.  
+([Html](https://developer.android.com/reference/android/text/Html.html) does not support all entities like i.e. '„' (&bdquo; or &#8222;)).
 
 The goal is highly performant conversion with a minimum of memory footprint. Best for frequently usage of relatively short strings like you will find in XML or HTML text elements or attribute values. So Regular Expressions were not an option.  
 It does not support streaming, which would require more overhead. And also wrappers like [StringReader](http://docs.oracle.com/javase/6/docs/api/java/io/StringReader.html) for [String](http://docs.oracle.com/javase/6/docs/api/java/lang/String.html) and [StringWriter](http://docs.oracle.com/javase/6/docs/api/java/io/StringWriter.html) for [StringBuilder](http://docs.oracle.com/javase/6/docs/api/java/lang/StringBuilder.html) have a lower performance compared to the wrapped classes.
