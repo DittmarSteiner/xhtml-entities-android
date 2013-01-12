@@ -2,13 +2,13 @@ XHTML Entities for Android
 ==========================
 
 This utility class encodes and decodes HTML and XML entities optimized for Android.  
-([Html](https://developer.android.com/reference/android/text/Html.html) does not support all entities like i.e. '„' (&amp;bdquo; or &amp;#8222;)).
+([android.text.Html](https://developer.android.com/reference/android/text/Html.html) does not support all entities like i.e. '„' (&amp;bdquo; or &amp;#8222;)).
 
 The goal is highly performant conversion with a minimum of memory footprint. Best for frequently usage of relatively short strings like you will find in XML or HTML text elements or attribute values. So Regular Expressions were not an option.  
 It does not support streaming, which would require more overhead. And also wrappers like [StringReader](http://docs.oracle.com/javase/6/docs/api/java/io/StringReader.html) for [String](http://docs.oracle.com/javase/6/docs/api/java/lang/String.html) and [StringWriter](http://docs.oracle.com/javase/6/docs/api/java/io/StringWriter.html) for [StringBuilder](http://docs.oracle.com/javase/6/docs/api/java/lang/StringBuilder.html) have a lower performance compared to the wrapped classes.
 
 The flow is optimized for the most probably occurence of characters in Roman languages, which means ASCII characters lower than 128 are most expected. 
-The apdaption for the Android platform utilizes [SparseArray](http://developer.android.com/reference/android/util/SparseArray.html) instead of [Map<Integer, String>](http://docs.oracle.com/javase/6/docs/api/java/util/Map.html) and [ContentValues](http://developer.android.com/reference/android/content/ContentValues.html) instead of [Map<String, Integer>](http://docs.oracle.com/javase/6/docs/api/java/util/Map.html).  
+The apdaption for the Android platform utilizes [SparseArray](http://developer.android.com/reference/android/util/SparseArray.html) instead of [Map&lt;Integer, String&gt;](http://docs.oracle.com/javase/6/docs/api/java/util/Map.html) and [ContentValues](http://developer.android.com/reference/android/content/ContentValues.html) instead of [Map&lt;String, Integer&gt;](http://docs.oracle.com/javase/6/docs/api/java/util/Map.html).  
 _Feel free to change the code for non-Android environments!_
 
 
