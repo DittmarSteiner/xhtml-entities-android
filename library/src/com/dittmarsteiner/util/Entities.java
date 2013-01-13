@@ -11,7 +11,7 @@
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
- * limitations under the License. * Copyright (C) 2013 Dittmar Steiner
+ * limitations under the License.
  */
 
 package com.dittmarsteiner.util;
@@ -21,20 +21,22 @@ import android.util.SparseArray;
 
 /**
  * <p>
- * This utility class encodes and decodes HTML and XML entities optimized for
- * Android.<br/>
- * ({@link android.text.Html Html} does not support all entities like i.e.
- * '&#8222;' (<code>&amp;bdquo;</code> or <code>&amp;#8222;</code>)).
+ * This utility class encodes and decodes HTML and XML entities and is optimized
+ * for Android.<br/>
+ * {@link android.text.Html Html} does not support all tags or like i.e.
+ * '&#8222;' (<code>&amp;bdquo;</code> or <code>&amp;#8222;</code>) and is just
+ * too complex for this purpose.
  * </p>
  * <p>
  * The goal is highly performant conversion with a minimum of memory footprint.
- * Best for frequently usage of relatively short strings like you will find in
- * XML or HTML text elements or attribute values. So Regular Expressions were
- * not an option. <br/>
+ * It is best for frequently usage of relatively short strings like you will
+ * find in XML or HTML text elements or attribute values. So Regular Expressions
+ * are not an option. <br/>
  * It does not support streaming, which would require more overhead. And also
  * wrappers like {@link java.io.StringReader StringReader} for {@link String}
  * and {@link java.io.StringWriter StringWriter} for {@link StringBuilder} have
- * a lower performance compared to the wrapped classes.
+ * a lower performance compared to the wrapped classes. Just by putting another
+ * method call on the stack.
  * </p>
  * <p>
  * The flow is optimized for the most probably occurence of characters in Roman
@@ -75,7 +77,9 @@ public class Entities {
 			ampEnt = "&amp;", quotEnt = "&quot;", aposEnt = "&apos;"; 
 	
 	/**
-	 * The revese version of {@link #decodeMap}.
+	 * Contains all codes and entities from <a
+	 * href="http://www.w3.org/2003/entities/2007xml/unicode.xml"
+	 * >http://www.w3.org/2003/entities/2007xml/unicode.xml</a>
 	 */
 	private static final SparseArray<String> encodeMap = 
 			new SparseArray<String>(mapSize);
@@ -340,8 +344,7 @@ public class Entities {
 	}
 	
 	/**
-	 * From <a href="http://www.w3.org/2003/entities/2007xml/unicode.xml"
-	 * >http://www.w3.org/2003/entities/2007xml/unicode.xml</a>
+	 * The revese version of {@link #encodeMap}.
 	 */
 	private static final ContentValues decodeMap = new ContentValues(mapSize);
 	// transfer key/values
@@ -352,41 +355,73 @@ public class Entities {
 		}
 	}
 	
+	/**
+	 * Encodes all basic XML and characters &gt; 127 to all known HTML entities
+	 * like <code>'&Auml;'</code> to <code>&amp;Auml;</code>. Otherwise escapes
+	 * them to <code>'&amp;#&lt;integer&gt;;'</code> like
+	 * <code>'&#666;'<code> to <code>&amp;#666;<code>.
+	 * 
+	 * @param str
+	 *            the String to encode
+	 * @return the encoded String
+	 * 
+	 * @see #encodeXml(String)
+	 */
 	public static String encodeHtml(String str) {
 		return encode(str, false, false);
 	}
 	
 	/**
+	 * Encodes all basic XML characters to entities <code>'&lt;'</code> to
+	 * <code>&amp;lt;</code>. All characters &gt; 127 are not encoded (unicode
+	 * as is)<br/>
+	 * <i>Except</i> the soft hyphen (<i>shy</i>) which will be
+	 * encodes as <code>&amp;#173;</code> just to make it visible.<br/>
+	 * (I really like hyphenation especially for small screens!)
 	 * 
 	 * @param str
-	 * @return unicode String
+	 *            the String to encode
+	 * @return the encoded Unicode-String
 	 */
 	public static String encodeXml(String str) {
 		return encode(str, true, false);
 	}
 	
 	/**
+	 * Just like {@link #encodeXml(String)} plus all characters &gt; 127 in the
+	 * form of <code>'&amp;#&lt;integer&gt;;'</code>.
 	 * 
 	 * @param str
-	 * @return ASCII String
+	 *            the String to encode
+	 * @return the encoded ASCII-String
 	 */
 	public static String encodeAsciiXml(String str) {
 		return encode(str, true, true);
 	}
 	
+	/**
+	 * Here the actual conversion is done. All condition and conversion are
+	 * inline to avoid method calls.
+	 * 
+	 * @param str
+	 * @param xml false for HTML
+	 * @param ascii do not keep any unicode char &gt; 127
+	 * @return
+	 */
 	private static String encode(String str, boolean xml, boolean ascii) {
 		if (str == null) {
 			return "";
 		}
 		
-		// size * 1.2 is just a guess, not based on emirical data
+		// size * 1.2 is just a guess, not based on empirical data
 		final StringBuilder builder = new StringBuilder((int)(str.length() * 1.2));
 		
 		for (int i = 0; i < str.length(); ++i) {
 			char c = str.charAt(i);
 			
-			// basic, lower than 128
-			switch (c) {
+			// xml basic
+			if (c < 128) {
+				switch (c) {
 				case lt:
 					builder.append(ltEnt);
 					continue;
@@ -402,6 +437,7 @@ public class Entities {
 				case apos:
 					builder.append(aposEnt);
 					continue;
+				}
 			}
 			
 			// xml
@@ -449,12 +485,25 @@ public class Entities {
 		return builder.toString();
 	}
 	
+	/**
+	 * The only little helper method do encode linke '&#666;' to '&amp;#666;'
+	 * @param c
+	 * @param builder
+	 */
 	private static void escape(int c, StringBuilder builder) {
 		builder.append("&#");
 		builder.append(Integer.toString(c));
 		builder.append(";");
 	}
 	
+	/**
+	 * E.g. <code>&amp;Auml;</code>, <code>&amp;#196;</code> and
+	 * <code>&amp;#xC4;</code> are decoded to &#196;
+	 * 
+	 * @param encoded
+	 *            XML or HTML String to decode
+	 * @return the decoded Unicode-String
+	 */
 	public static String decode(final String encoded) {
 		if (encoded.indexOf(amp) == -1) {
 			// no StringBuilder allocation required
@@ -472,8 +521,8 @@ public class Entities {
 			else {
 				final int sOffset = encoded.indexOf(semicolon, i + 1);
 				
-				// Min length is 4 like "&lt;"
-				// Max length: "&thetasym;" and "&#x000e4;" are possible, 
+				// min length is 4 like "&lt;"
+				// max length: "&thetasym;" and "&#x000e4;" are possible, 
 				// otherwise this would just be a sentence.
 				if (sOffset < i + 3 || sOffset >= i + 10) {
 					builder.append(c);

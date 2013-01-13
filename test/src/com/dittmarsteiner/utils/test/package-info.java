@@ -15,6 +15,9 @@
  */
 
 /**
+ * The {@link com.dittmarsteiner.utils.test.MainActivity} is only for holding 
+ * the {@link com.dittmarsteiner.utils.test.EntitiesTest}.
+ * 
  * @author <a href="mailto:dittmar.steiner@gmail.com">Dittmar Steiner</a>
  */
-package com.dittmarsteiner.util;
+package com.dittmarsteiner.utils.test;
