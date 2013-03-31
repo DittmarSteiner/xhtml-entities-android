@@ -16,7 +16,9 @@
 
 package com.dittmarsteiner.util;
 
-import android.content.ContentValues;
+import java.util.HashMap;
+import java.util.Map;
+
 import android.util.SparseArray;
 
 /**
@@ -42,8 +44,7 @@ import android.util.SparseArray;
  * The flow is optimized for the most probably occurence of characters in Roman
  * languages, which means ASCII characters lower than 128 are most expected. <br/>
  * The apdaption for the Android platform utilizes {@link SparseArray} instead
- * of {@link java.util.Map Map&lt;Integer, String&gt;} and {@link ContentValues}
- * instead of {@link java.util.Map Map&lt;String, Integer&gt;}. <br/>
+ * of {@link java.util.Map Map&lt;Integer, String&gt;}. <br/>
  * <i style="color: green;">Feel free to change the code for non-Android
  * environments!</i>
  * </p>
@@ -346,7 +347,7 @@ public class Entities {
 	/**
 	 * The revese version of {@link #encodeMap}.
 	 */
-	private static final ContentValues decodeMap = new ContentValues(mapSize);
+	private static final Map<String, Integer> decodeMap = new HashMap<String, Integer>(mapSize);
 	// transfer key/values
 	static {
 		final int max = encodeMap.size();
@@ -567,7 +568,7 @@ public class Entities {
 					}
 				}
 				else {
-					code = decodeMap.getAsInteger(entity);
+					code = (Integer)decodeMap.get(entity);
 				}
 				
 				if (code == null) {

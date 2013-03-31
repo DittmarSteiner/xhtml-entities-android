@@ -161,6 +161,21 @@ public class EntitiesTest extends TestCase {
 		
 		ml = Entities.decode("&;");
 		assertEquals("&;", ml);
+		
+//		ml = Entities.decode("&#x173;");
+//		assertEquals("&#x173;", ml);
+		
+		ml = Entities.decode("&E4;");
+		assertEquals("&E4;", ml);
+		
+		ml = Entities.decode("&xE4;");
+		assertEquals("&xE4;", ml);
+		
+		ml = Entities.decode("&xGH;");
+		assertEquals("&xGH;", ml);
+		
+		ml = Entities.decode("&173;");
+		assertEquals("&173;", ml);
 	}
 	
 	private void assertEscapedXml(String str) {
