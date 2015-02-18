@@ -1,3 +1,8 @@
+IMPORTANT NOTE
+==============
+*This project is deprecated and is replaced by [xhtml-entities](https://github.com/DittmarSteiner/xhtml-entities).*  
+*It could be deleted later!*
+
 XHTML Entities for Android
 ==========================
 
